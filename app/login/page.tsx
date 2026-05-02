@@ -32,11 +32,6 @@ export default function LoginPage() {
       return;
     }
 
-    if (!email.includes('@')) {
-      setError('Por favor, insira um email válido');
-      return;
-    }
-
     setIsLoading(true);
 
     try {
@@ -47,12 +42,12 @@ export default function LoginPage() {
       router.push(redirect);
     } catch (err) {
       if (err instanceof Error) {
-        if (err.message.includes('Invalid login credentials')) {
+        if (err.message.includes('Invalid login credentials') || err.message.includes('Credenciais inválidas')) {
           setError('Email ou senha inválidos');
         } else if (err.message.includes('Email not confirmed')) {
           setError('Por favor, confirme seu email antes de fazer login');
         } else {
-          setError('Erro ao fazer login. Tente novamente.');
+          setError(err.message || 'Erro ao fazer login. Tente novamente.');
         }
       } else {
         setError('Erro ao fazer login. Tente novamente.');

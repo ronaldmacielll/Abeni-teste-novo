@@ -27,10 +27,17 @@ const HARDCODED_ADMIN = {
 }
 
 // Check if we're using temporary Supabase values
-const isUsingTempSupabase = supabaseUrl?.includes('temp-project') || !supabaseUrl || !supabaseAnonKey
+const isUsingTempSupabase = 
+  !supabaseUrl || 
+  !supabaseAnonKey || 
+  supabaseUrl.includes('temp-project') || 
+  supabaseUrl.includes('your_supabase') ||
+  supabaseAnonKey.includes('temp_anon') ||
+  supabaseAnonKey.includes('your_supabase')
 
 let supabase: any = null
 
+// Only create Supabase client if we have real credentials
 if (!isUsingTempSupabase) {
   try {
     supabase = createClient(supabaseUrl, supabaseAnonKey)
