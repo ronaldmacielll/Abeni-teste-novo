@@ -7,7 +7,7 @@
 
 'use client';
 
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { GetPostsResponse } from '../types/post.types';
 
 interface UsePerformanceDataOptions {

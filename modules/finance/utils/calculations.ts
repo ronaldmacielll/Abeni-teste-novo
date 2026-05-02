@@ -5,7 +5,7 @@
  * All functions are side-effect free and testable with property-based testing.
  */
 
-import { Transaction, Installment } from '../types/transaction.types'
+import { Transaction } from '../types/transaction.types'
 
 /**
  * Period filter interface for date range filtering
@@ -264,7 +264,7 @@ export function calculatePerInstallmentValue(
  */
 export function processInstallments(
   transaction: Transaction,
-  referenceDate?: Date
+  _referenceDate?: Date
 ): Transaction[] {
   if (!transaction.parcelamento) return []
   
@@ -273,7 +273,6 @@ export function processInstallments(
   
   if (remainingInstallments <= 0) return []
   
-  const today = referenceDate || new Date()
   const futureInstallments: Transaction[] = []
   
   for (let i = 1; i <= remainingInstallments; i++) {

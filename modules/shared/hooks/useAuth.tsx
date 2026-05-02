@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Refresh session token
   const refreshSession = useCallback(async () => {
     try {
-      const newToken = await authService.refreshToken();
+      await authService.refreshToken();
       const newSession = await authService.getSession();
       
       if (newSession) {

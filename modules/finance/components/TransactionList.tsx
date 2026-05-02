@@ -35,7 +35,7 @@ function formatCurrency(value: number): string {
  */
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return new Intl.DateFormat('pt-BR').format(date);
+  return date.toLocaleDateString('pt-BR');
 }
 
 /**
@@ -99,8 +99,8 @@ function StatusIndicator({ status }: { status: Transaction['status'] }) {
  */
 export const TransactionList: React.FC<TransactionListProps> = ({
   transactions,
-  onSort,
-  sortField = 'dataVencimento',
+  onSort: _onSort,
+  sortField: _sortField = 'dataVencimento',
   sortDirection = 'asc',
 }) => {
   // Sort transactions by due date

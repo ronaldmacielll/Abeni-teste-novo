@@ -57,6 +57,7 @@ export const ErrorNotification: React.FC<ErrorNotificationProps> = ({
 
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [autoClose, autoCloseDuration]);
 
   const handleClose = () => {
