@@ -21,6 +21,7 @@ interface UseFinancialDataReturn {
   projections: GetTransactionsResponse['projections'] | undefined;
   isLoading: boolean;
   isError: boolean;
+  isRefetching: boolean;
   error: Error | null;
   refetch: () => void;
   data: GetTransactionsResponse | undefined;

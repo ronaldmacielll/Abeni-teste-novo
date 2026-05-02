@@ -23,8 +23,7 @@ export default function FinancePageContent() {
   });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isCreating, setIsCreating] = useState(false);
+  const [_isCreating, setIsCreating] = useState(false);
 
   /**
    * Handle transaction creation

@@ -20,6 +20,7 @@ interface UsePerformanceDataReturn {
   metadata: GetPostsResponse['metadata'] | undefined;
   isLoading: boolean;
   isError: boolean;
+  isRefetching: boolean;
   error: Error | null;
   refetch: () => void;
   data: GetPostsResponse | undefined;

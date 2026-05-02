@@ -391,7 +391,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Build custom fields for ClickUp
-    const customFields = [
+    const customFields: Array<{ id: string; value: any }> = [
       {
         id: FINANCIAL_FIELD_MAP.valor,
         value: body.valor,
