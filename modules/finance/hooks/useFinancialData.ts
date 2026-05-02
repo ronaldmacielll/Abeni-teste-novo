@@ -15,10 +15,15 @@ interface UseFinancialDataOptions {
   enabled?: boolean;
 }
 
-interface UseFinancialDataReturn extends UseQueryResult<GetTransactionsResponse, Error> {
+interface UseFinancialDataReturn {
   transactions: GetTransactionsResponse['transactions'];
   summary: GetTransactionsResponse['summary'] | undefined;
   projections: GetTransactionsResponse['projections'] | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: () => void;
+  data: GetTransactionsResponse | undefined;
 }
 
 /**

@@ -15,9 +15,14 @@ interface UsePerformanceDataOptions {
   enabled?: boolean;
 }
 
-interface UsePerformanceDataReturn extends UseQueryResult<GetPostsResponse, Error> {
+interface UsePerformanceDataReturn {
   posts: GetPostsResponse['posts'];
   metadata: GetPostsResponse['metadata'] | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+  refetch: () => void;
+  data: GetPostsResponse | undefined;
 }
 
 /**
