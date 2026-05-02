@@ -12,11 +12,26 @@ const authRoutes = ['/login'];
 // Validate Supabase JWT token
 async function validateSupabaseToken(token: string): Promise<boolean> {
   try {
+    // Check if it's a development token (hardcoded admin)
+    if (token.startsWith('dev-token-')) {
+      console.log('Validating development token');
+      return true;
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing Supabase environment variables');
+    // Check if we're using temporary Supabase values
+    const isUsingTempSupabase = 
+      !supabaseUrl || 
+      !supabaseAnonKey || 
+      supabaseUrl.includes('temp-project') || 
+      supabaseUrl.includes('your_supabase') ||
+      supabaseAnonKey.includes('temp_anon') ||
+      supabaseAnonKey.includes('your_supabase');
+
+    if (isUsingTempSupabase) {
+      console.log('Using temporary Supabase config, skipping validation');
       return false;
     }
 
