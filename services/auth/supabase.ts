@@ -12,15 +12,15 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 // Hardcoded admin user for development
 const HARDCODED_ADMIN = {
-  email: 'adm',
+  email: 'ronaldadm@hotmail.com',
   password: '34775585',
   user: {
     id: 'admin-dev-001',
-    email: 'admin@dev.local',
+    email: 'ronaldadm@hotmail.com',
     clientId: 'admin-client',
     role: 'internal' as const,
     metadata: {
-      name: 'Administrador',
+      name: 'Ronald Administrador',
       company: 'Sistema',
     },
   },
