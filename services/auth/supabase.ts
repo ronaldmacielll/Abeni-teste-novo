@@ -44,6 +44,9 @@ if (!isUsingTempSupabase) {
   } catch (error) {
     console.warn('Failed to create Supabase client, using fallback auth')
   }
+} else {
+  // Create a mock Supabase client that doesn't make network calls
+  console.log('Using hardcoded admin authentication (no Supabase connection)')
 }
 
 export interface User {
