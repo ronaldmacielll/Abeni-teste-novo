@@ -36,24 +36,24 @@ function formatCurrency(value: number): string {
 function getVariantStyles(variant: SummaryCardProps['variant']) {
   const styles = {
     primary: {
-      bg: 'bg-primary-50',
-      text: 'text-primary-700',
-      border: 'border-primary-200',
+      bg: 'bg-purple-500/10',
+      text: 'text-purple-400',
+      border: 'border-purple-500',
     },
     success: {
-      bg: 'bg-success-light',
-      text: 'text-success-text',
-      border: 'border-success-main',
+      bg: 'bg-green-500/10',
+      text: 'text-green-400',
+      border: 'border-green-500',
     },
     warning: {
-      bg: 'bg-warning-light',
-      text: 'text-warning-text',
-      border: 'border-warning-main',
+      bg: 'bg-yellow-500/10',
+      text: 'text-yellow-400',
+      border: 'border-yellow-500',
     },
     danger: {
-      bg: 'bg-danger-light',
-      text: 'text-danger-text',
-      border: 'border-danger-main',
+      bg: 'bg-red-500/10',
+      text: 'text-red-400',
+      border: 'border-red-500',
     },
   };
 
@@ -83,7 +83,7 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({
     <Card className={clsx('border-l-4', variantStyles.border)}>
       <div className="flex flex-col gap-2">
         {/* Title */}
-        <h3 className="text-sm font-medium text-gray-600">
+        <h3 className="text-sm font-medium text-gray-300">
           {title}
         </h3>
 
@@ -97,9 +97,9 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({
           {trend && trend !== 'neutral' && (
             <div className="flex items-center gap-1">
               {trend === 'up' ? (
-                <TrendingUp className="w-4 h-4 text-success-main" />
+                <TrendingUp className="w-4 h-4 text-green-400" />
               ) : (
-                <TrendingDown className="w-4 h-4 text-danger-main" />
+                <TrendingDown className="w-4 h-4 text-red-400" />
               )}
             </div>
           )}
@@ -107,7 +107,7 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({
 
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             {subtitle}
           </p>
         )}

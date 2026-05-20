@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['attachments.clickup.com'],
+    domains: ['attachments.clickup.com', 'images.unsplash.com'],
     formats: ['image/avif', 'image/webp'],
   },
   compress: true,

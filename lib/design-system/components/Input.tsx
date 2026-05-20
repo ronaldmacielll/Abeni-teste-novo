@@ -12,18 +12,18 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ error, errorMessage, label, className, disabled, ...props }, ref) => {
-    const baseStyles = 'w-full rounded-lg border px-4 py-2 text-base focus:outline-none focus:ring-2 transition-colors duration-200';
+    const baseStyles = 'w-full rounded-xl border px-4 py-3 text-base focus:outline-none focus:ring-2 transition-all duration-300 backdrop-blur-sm';
     
     const stateStyles = error
-      ? 'border-danger-main focus:ring-danger-main focus:border-transparent'
-      : 'border-gray-300 focus:ring-primary-500 focus:border-transparent';
+      ? 'border-red-500 focus:ring-red-500 focus:border-transparent text-white bg-red-900/10'
+      : 'border-gray-700 focus:ring-purple-500 focus:border-transparent text-white hover:border-gray-600';
     
-    const disabledStyles = disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white';
+    const disabledStyles = disabled ? 'bg-gray-900 cursor-not-allowed' : 'bg-gray-800/50';
     
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             {label}
           </label>
         )}
@@ -39,7 +39,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && errorMessage && (
-          <p className="mt-1 text-sm text-danger-text">{errorMessage}</p>
+          <p className="mt-2 text-sm text-red-400">{errorMessage}</p>
         )}
       </div>
     );

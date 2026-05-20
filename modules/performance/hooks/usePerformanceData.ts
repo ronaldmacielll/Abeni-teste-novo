@@ -30,10 +30,30 @@ interface UsePerformanceDataReturn {
  * Fetch posts from the BFF API
  */
 async function fetchPosts(period: 'week' | 'month' = 'month'): Promise<GetPostsResponse> {
+  // Get token from localStorage
+  const authSession = localStorage.getItem('auth_session');
+  let token = '';
+  
+  if (authSession) {
+    try {
+      const session = JSON.parse(authSession);
+      token = session.accessToken || '';
+    } catch (error) {
+      console.error('Failed to parse auth session:', error);
+    }
+  }
+
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  // Add Authorization header if token exists
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`/api/posts?period=${period}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     credentials: 'include',
   });
 

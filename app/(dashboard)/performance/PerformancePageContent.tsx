@@ -29,7 +29,7 @@ export default function PerformancePageContent() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">
               Performance Dashboard
             </h1>
           </div>
@@ -51,11 +51,11 @@ export default function PerformancePageContent() {
           {/* Filters Section */}
           <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-white">
                 Posts Recentes
               </h2>
               {metadata && (
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-gray-400 mt-1">
                   {metadata.total} {metadata.total === 1 ? 'post encontrado' : 'posts encontrados'}
                   {' • '}
                   {period === 'week' ? 'Últimos 7 dias' : 'Últimos 30 dias'}
@@ -74,16 +74,16 @@ export default function PerformancePageContent() {
 
           {/* Error State */}
           {error && !isLoading && (
-            <div className="bg-white rounded-lg shadow-sm border border-danger-light p-6">
+            <div className="bg-dark-card rounded-2xl shadow-xl border border-red-500/30 p-6">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
-                  <AlertCircle className="w-6 h-6 text-danger-main" />
+                  <AlertCircle className="w-6 h-6 text-red-400" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     Erro ao carregar dados
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-400 mb-4">
                     {error.message}
                   </p>
                   <Button
@@ -101,15 +101,15 @@ export default function PerformancePageContent() {
 
           {/* Empty State */}
           {!isLoading && !error && posts.length === 0 && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+            <div className="bg-dark-card rounded-2xl shadow-xl border border-gray-800 p-12 text-center">
               <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <AlertCircle className="w-8 h-8 text-gray-400" />
+                <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-8 h-8 text-gray-500" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-white mb-2">
                   Nenhum post encontrado
                 </h3>
-                <p className="text-sm text-gray-600 mb-6">
+                <p className="text-sm text-gray-400 mb-6">
                   Não há posts para o período selecionado.
                   {period === 'week' 
                     ? ' Tente selecionar "Mês" para ver mais resultados.' 

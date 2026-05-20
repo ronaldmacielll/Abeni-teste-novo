@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { Button, Input, Card } from '@/lib/design-system/components';
 import { useAuth } from '@/modules/shared/hooks/useAuth';
 
@@ -58,18 +59,58 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 relative overflow-hidden">
+      {/* Full screen background watermark image */}
+      <div className="absolute inset-0">
+        {/* Background image - full screen watermark */}
+        <div className="absolute inset-0 opacity-25">
+          <Image
+            src="/images/login-bg.jpg"
+            alt="Background"
+            fill
+            className="object-cover"
+            priority
+            quality={90}
+          />
+        </div>
+        
+        {/* Dark overlay for better contrast and readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-purple-900/40 z-10" />
+      </div>
+
+      {/* Background gradient effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-800 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="w-full max-w-md relative z-30">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Portal de Performance + Gestão Financeira
-          </h1>
-          <p className="text-gray-600">
+          <div className="mb-6">
+            {/* Modern stylized ALUA logo with Orbitron font */}
+            <h1 className="text-8xl font-logo-orbitron text-white mb-3 tracking-widest relative inline-block">
+              <span className="relative z-10 bg-gradient-to-br from-white via-purple-100 to-purple-300 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(168,85,247,0.6)]">
+                ALUA
+              </span>
+              {/* Glow effect behind text */}
+              <span className="absolute inset-0 blur-3xl bg-gradient-to-br from-purple-400 to-purple-600 opacity-40 -z-10">
+                ALUA
+              </span>
+            </h1>
+            <p className="text-sm text-purple-300 font-medium tracking-wide">
+              Social Media Management
+            </p>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-300 mb-2">
+            Bem-vindo à ALUA
+          </h2>
+          <p className="text-gray-400 text-sm">
             Faça login para acessar o sistema
           </p>
         </div>
 
-        <Card variant="elevated">
+        <Card variant="elevated" className="backdrop-blur-xl bg-dark-elevated/80">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <Input
@@ -98,7 +139,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="bg-danger-light border border-danger-main text-danger-text px-4 py-3 rounded-lg text-sm">
+              <div className="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl text-sm backdrop-blur-sm">
                 {error}
               </div>
             )}
@@ -115,7 +156,7 @@ export default function LoginPage() {
           </form>
         </Card>
 
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-sm text-gray-500 mt-6">
           Não tem uma conta? Entre em contato com o administrador.
         </p>
       </div>

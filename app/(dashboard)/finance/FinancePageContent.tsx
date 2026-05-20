@@ -63,7 +63,7 @@ export default function FinancePageContent() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">
               Gestão Financeira
             </h1>
           </div>
@@ -88,11 +88,11 @@ export default function FinancePageContent() {
 
         {/* Error State */}
         {error && (
-          <div className="bg-danger-light border border-danger-main rounded-lg p-4 mb-6">
+          <div className="bg-red-900/20 border border-red-500/50 rounded-2xl p-4 mb-6">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 <svg
-                  className="w-5 h-5 text-danger-main"
+                  className="w-5 h-5 text-red-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -106,10 +106,10 @@ export default function FinancePageContent() {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-danger-text">
+                <h3 className="text-sm font-medium text-red-400">
                   Erro ao carregar dados
                 </h3>
-                <p className="text-sm text-danger-text mt-1">
+                <p className="text-sm text-red-300 mt-1">
                   {error.message}
                 </p>
               </div>
@@ -169,10 +169,10 @@ export default function FinancePageContent() {
 
             {/* Transaction Form Modal/Drawer */}
             {isFormOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                <div className="bg-dark-elevated rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-800">
                   <div className="p-6">
-                    <h2 className="text-xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-xl font-bold text-white mb-4">
                       Nova Transação
                     </h2>
                     <TransactionForm
@@ -187,7 +187,7 @@ export default function FinancePageContent() {
             {/* Transactions Section */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-white">
                   Transações
                 </h2>
                 <Button

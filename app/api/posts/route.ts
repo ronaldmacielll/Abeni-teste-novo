@@ -106,42 +106,186 @@ export async function GET(request: NextRequest) {
     // 3. Calculate date range for filtering
     const { startDate, endDate } = getDateRange(period)
 
-    // 4. Initialize ClickUp service
-    const clickupService = new ClickUpService(env.clickup.apiKey)
+    // 4. Check if using temporary ClickUp credentials (development mode)
+    const isUsingTempClickUp = 
+      env.clickup.apiKey === 'temp_clickup_key_for_development' ||
+      env.clickup.apiKey.startsWith('temp_') ||
+      env.clickup.performanceListId === '' ||
+      env.clickup.performanceListId.startsWith('temp_')
 
-    // 5. Fetch tasks from ClickUp performance list
-    let clickupTasks
-    try {
-      clickupTasks = await clickupService.getTasksByList(
-        env.clickup.performanceListId,
+    let posts: Post[] = []
+
+    if (isUsingTempClickUp) {
+      // Return mock data for development
+      console.log('Using mock performance data (no ClickUp connection)')
+      
+      const mockPosts: Post[] = [
         {
-          archived: false,
-          include_closed: false,
-        }
-      )
-    } catch (error) {
-      console.error('ClickUp API error:', error)
-      return NextResponse.json(
-        { 
-          error: 'Failed to fetch data from ClickUp API',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          id: 'mock-post-1',
+          title: 'Lançamento de Produto - Campanha Instagram',
+          imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 15420,
+            engajamento: 1847,
+            impressoes: 23150,
+            cliques: 892,
+          },
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
         },
-        { status: 502 }
-      )
+        {
+          id: 'mock-post-2',
+          title: 'Dicas de Uso - Stories Interativo',
+          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 8930,
+            engajamento: 2341,
+            impressoes: 12450,
+            cliques: 456,
+          },
+          createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-post-3',
+          title: 'Depoimento de Cliente - Vídeo',
+          imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 22100,
+            engajamento: 3254,
+            impressoes: 35600,
+            cliques: 1203,
+          },
+          createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-post-4',
+          title: 'Promoção Relâmpago - Feed',
+          imageUrl: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 31250,
+            engajamento: 4892,
+            impressoes: 48900,
+            cliques: 2341,
+          },
+          createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-post-5',
+          title: 'Bastidores da Empresa - Reels',
+          imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 18700,
+            engajamento: 2156,
+            impressoes: 27800,
+            cliques: 734,
+          },
+          createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-post-6',
+          title: 'Tutorial de Produto - Carrossel',
+          imageUrl: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 12340,
+            engajamento: 1567,
+            impressoes: 18900,
+            cliques: 623,
+          },
+          createdAt: new Date(Date.now() - 19 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-post-7',
+          title: 'Parceria com Influencer',
+          imageUrl: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 45600,
+            engajamento: 6789,
+            impressoes: 67800,
+            cliques: 3421,
+          },
+          createdAt: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-post-8',
+          title: 'Conteúdo Educativo - Infográfico',
+          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
+          status: 'Publicado',
+          metrics: {
+            alcance: 9870,
+            engajamento: 1234,
+            impressoes: 15600,
+            cliques: 445,
+          },
+          createdAt: new Date(Date.now() - 26 * 24 * 60 * 60 * 1000).toISOString(),
+          publishedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+      ]
+
+      // Filter by date range based on publishedAt
+      posts = mockPosts.filter((post) => {
+        if (!post.publishedAt) return false
+        const postDate = new Date(post.publishedAt)
+        return postDate >= startDate && postDate <= endDate
+      })
+    } else {
+      // Real ClickUp integration
+      const clickupService = new ClickUpService(env.clickup.apiKey)
+
+      // 5. Fetch tasks from ClickUp performance list
+      let clickupTasks
+      try {
+        clickupTasks = await clickupService.getTasksByList(
+          env.clickup.performanceListId,
+          {
+            archived: false,
+            include_closed: false,
+          }
+        )
+      } catch (error) {
+        console.error('ClickUp API error:', error)
+        return NextResponse.json(
+          { 
+            error: 'Failed to fetch data from ClickUp API',
+            message: error instanceof Error ? error.message : 'Unknown error'
+          },
+          { status: 502 }
+        )
+      }
+
+      // 6. Normalize ClickUp tasks to Post objects
+      posts = clickupTasks.map((task) => {
+        const post = dataNormalizer.normalizePost(task, PERFORMANCE_FIELD_MAP)
+        // Set client_id from JWT
+        return { ...post, clientId }
+      })
+
+      // 7. Filter by client_id (multi-tenant isolation)
+      posts = filterPostsByClientId(posts, clientId)
+
+      // 8. Filter by date range
+      posts = filterPostsByDateRange(posts, startDate, endDate)
     }
-
-    // 6. Normalize ClickUp tasks to Post objects
-    let posts: Post[] = clickupTasks.map((task) => {
-      const post = dataNormalizer.normalizePost(task, PERFORMANCE_FIELD_MAP)
-      // Set client_id from JWT
-      return { ...post, clientId }
-    })
-
-    // 7. Filter by client_id (multi-tenant isolation)
-    posts = filterPostsByClientId(posts, clientId)
-
-    // 8. Filter by date range
-    posts = filterPostsByDateRange(posts, startDate, endDate)
 
     // 9. Build response with metadata
     const response: GetPostsResponse = {

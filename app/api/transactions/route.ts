@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { ClickUpService } from '@/services/clickup/client'
 import { dataNormalizer } from '@/services/clickup/normalizer'
 import { filterByClientId } from '@/services/clickup/filters'
-import { extractClientIdFromToken } from '@/services/auth/jwt'
+import { extractClientIdFromToken, extractRoleFromToken } from '@/services/auth/jwt'
 import { env } from '@/lib/env'
 import { compressedJsonResponse } from '@/lib/api/compression'
 import {
@@ -107,7 +107,7 @@ function filterTransactionsByDateRange(
  */
 export async function GET(request: NextRequest) {
   try {
-    // 1. Validate JWT and extract client_id
+    // 1. Validate JWT and extract client_id and role
     const authHeader = request.headers.get('authorization')
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -119,6 +119,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7)
     const clientId = extractClientIdFromToken(token)
+    const role = extractRoleFromToken(token)
 
     if (!clientId) {
       return NextResponse.json(
@@ -127,7 +128,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // 2. Parse query parameters
+    // 2. Check if user has permission to access financial data
+    // Only internal users can access financial data
+    if (role !== 'internal') {
+      return NextResponse.json(
+        { error: 'Acesso negado. Apenas usuários internos podem acessar dados financeiros.' },
+        { status: 403 }
+      )
+    }
+
+    // 3. Parse query parameters
     const { searchParams } = new URL(request.url)
     const period = searchParams.get('period') || 'month'
     const startDateParam = searchParams.get('startDate')
@@ -163,39 +173,195 @@ export async function GET(request: NextRequest) {
       endDate = dateRange.endDate
     }
 
-    // 4. Initialize ClickUp service
-    const clickupService = new ClickUpService(env.clickup.apiKey)
+    // 4. Check if using temporary ClickUp credentials (development mode)
+    const isUsingTempClickUp = 
+      env.clickup.apiKey === 'temp_clickup_key_for_development' ||
+      env.clickup.apiKey.startsWith('temp_') ||
+      env.clickup.financialListId === '' ||
+      env.clickup.financialListId.startsWith('temp_')
 
-    // 5. Fetch tasks from ClickUp financial list
-    let clickupTasks
-    try {
-      clickupTasks = await clickupService.getTasksByList(
-        env.clickup.financialListId,
+    let transactions: Transaction[] = []
+
+    if (isUsingTempClickUp) {
+      // Return mock data for development
+      console.log('Using mock financial data (no ClickUp connection)')
+      
+      const mockTransactions: Transaction[] = [
+        // Entradas (Receitas)
         {
-          archived: false,
-          include_closed: false,
-        }
-      )
-    } catch (error) {
-      console.error('ClickUp API error:', error)
-      return NextResponse.json(
-        { 
-          error: 'Failed to fetch data from ClickUp API',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          id: 'mock-trans-1',
+          descricao: 'Pagamento Cliente - Projeto Website',
+          valor: 8500.00,
+          tipo: 'Entrada',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+          impostosTaxas: 1275.00, // 15% de impostos
+          clientId,
         },
-        { status: 502 }
-      )
+        {
+          id: 'mock-trans-2',
+          descricao: 'Mensalidade - Gestão de Redes Sociais',
+          valor: 3200.00,
+          tipo: 'Entrada',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 480.00,
+          clientId,
+        },
+        {
+          id: 'mock-trans-3',
+          descricao: 'Consultoria - Estratégia Digital',
+          valor: 5000.00,
+          tipo: 'Entrada',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 750.00,
+          clientId,
+        },
+        {
+          id: 'mock-trans-4',
+          descricao: 'Projeto E-commerce - Parcela 1/3',
+          valor: 4000.00,
+          tipo: 'Entrada',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 600.00,
+          parcelamento: '1/3',
+          clientId,
+        },
+        {
+          id: 'mock-trans-5',
+          descricao: 'Campanha de Anúncios - Cliente Premium',
+          valor: 6800.00,
+          tipo: 'Entrada',
+          status: 'Pendente',
+          dataVencimento: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days from now
+          impostosTaxas: 1020.00,
+          clientId,
+        },
+        {
+          id: 'mock-trans-6',
+          descricao: 'Projeto E-commerce - Parcela 2/3',
+          valor: 4000.00,
+          tipo: 'Entrada',
+          status: 'Pendente',
+          dataVencimento: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 600.00,
+          parcelamento: '2/3',
+          clientId,
+        },
+        
+        // Saídas (Despesas)
+        {
+          id: 'mock-trans-7',
+          descricao: 'Salários - Equipe',
+          valor: 12000.00,
+          tipo: 'Saída',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-8',
+          descricao: 'Aluguel - Escritório',
+          valor: 2500.00,
+          tipo: 'Saída',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-9',
+          descricao: 'Assinatura - Ferramentas SaaS',
+          valor: 890.00,
+          tipo: 'Saída',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-10',
+          descricao: 'Fornecedor - Serviços de Design',
+          valor: 1800.00,
+          tipo: 'Saída',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-11',
+          descricao: 'Investimento em Anúncios - Meta Ads',
+          valor: 3500.00,
+          tipo: 'Saída',
+          status: 'Pago',
+          dataVencimento: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-12',
+          descricao: 'Contador - Serviços Contábeis',
+          valor: 800.00,
+          tipo: 'Saída',
+          status: 'Pendente',
+          dataVencimento: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-13',
+          descricao: 'Internet e Telefonia',
+          valor: 450.00,
+          tipo: 'Saída',
+          status: 'Pendente',
+          dataVencimento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+        {
+          id: 'mock-trans-14',
+          descricao: 'Energia Elétrica',
+          valor: 620.00,
+          tipo: 'Saída',
+          status: 'Pendente',
+          dataVencimento: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
+          clientId,
+        },
+      ]
+
+      transactions = mockTransactions
+    } else {
+      // Real ClickUp integration
+      const clickupService = new ClickUpService(env.clickup.apiKey)
+
+      // 5. Fetch tasks from ClickUp financial list
+      let clickupTasks
+      try {
+        clickupTasks = await clickupService.getTasksByList(
+          env.clickup.financialListId,
+          {
+            archived: false,
+            include_closed: false,
+          }
+        )
+      } catch (error) {
+        console.error('ClickUp API error:', error)
+        return NextResponse.json(
+          { 
+            error: 'Failed to fetch data from ClickUp API',
+            message: error instanceof Error ? error.message : 'Unknown error'
+          },
+          { status: 502 }
+        )
+      }
+
+      // 6. Normalize ClickUp tasks to Transaction objects
+      transactions = clickupTasks.map((task) => {
+        const transaction = dataNormalizer.normalizeTransaction(task, FINANCIAL_FIELD_MAP)
+        // Set client_id from JWT
+        return { ...transaction, clientId }
+      })
+
+      // 7. Filter by client_id (multi-tenant isolation)
+      transactions = filterByClientId(transactions, clientId)
     }
-
-    // 6. Normalize ClickUp tasks to Transaction objects
-    let transactions: Transaction[] = clickupTasks.map((task) => {
-      const transaction = dataNormalizer.normalizeTransaction(task, FINANCIAL_FIELD_MAP)
-      // Set client_id from JWT
-      return { ...transaction, clientId }
-    })
-
-    // 7. Filter by client_id (multi-tenant isolation)
-    transactions = filterByClientId(transactions, clientId)
 
     // 8. Filter by date range (for summary calculations)
     const filteredTransactions = filterTransactionsByDateRange(transactions, startDate, endDate)

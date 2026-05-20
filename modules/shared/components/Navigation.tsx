@@ -34,45 +34,61 @@ export function Navigation({ currentModule, userRole }: NavigationProps) {
   const showFinanceModule = role === 'internal';
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-dark-elevated border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Module Links */}
-          <div className="flex space-x-8">
-            {/* Performance Module Link */}
-            <Link
-              href="/performance"
-              className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                activeModule === 'performance'
-                  ? 'border-primary-500 text-gray-900'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <BarChart3 className="w-5 h-5 mr-2" />
-              Performance
-            </Link>
+          {/* Logo and Module Links */}
+          <div className="flex items-center space-x-8">
+            {/* Logo */}
+            <div className="flex items-center">
+              <h1 className="text-2xl font-logo text-white">
+                ALUA
+              </h1>
+              <span className="ml-2 text-xs text-purple-400 font-medium hidden sm:inline">
+                Social Media
+              </span>
+            </div>
 
-            {/* Finance Module Link - Only for internal users */}
-            {showFinanceModule && (
+            {/* Divider */}
+            <div className="h-8 w-px bg-gray-700 hidden sm:block"></div>
+
+            {/* Module Links */}
+            <div className="flex space-x-6">
+              {/* Performance Module Link */}
               <Link
-                href="/finance"
+                href="/performance"
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                  activeModule === 'finance'
-                    ? 'border-primary-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeModule === 'performance'
+                    ? 'border-purple-500 text-white'
+                    : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600'
                 }`}
               >
-                <DollarSign className="w-5 h-5 mr-2" />
-                Financeiro
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Performance
               </Link>
-            )}
+
+              {/* Finance Module Link - Only for internal users */}
+              {showFinanceModule && (
+                <Link
+                  href="/finance"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
+                    activeModule === 'finance'
+                      ? 'border-purple-500 text-white'
+                      : 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600'
+                  }`}
+                >
+                  <DollarSign className="w-5 h-5 mr-2" />
+                  Financeiro
+                </Link>
+              )}
+            </div>
           </div>
 
           {/* User Info and Logout */}
           <div className="flex items-center space-x-4">
             {/* User Information */}
-            <div className="hidden sm:flex items-center text-sm text-gray-700">
-              <User className="w-4 h-4 mr-2 text-gray-400" />
+            <div className="hidden sm:flex items-center text-sm text-gray-300">
+              <User className="w-4 h-4 mr-2 text-gray-500" />
               <div className="flex flex-col">
                 <span className="font-medium">
                   {user?.metadata?.name || user?.email}
@@ -88,7 +104,7 @@ export function Navigation({ currentModule, userRole }: NavigationProps) {
               variant="outline"
               size="sm"
               onClick={signOut}
-              className="flex items-center"
+              className="flex items-center bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
             >
               <LogOut className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">Sair</span>

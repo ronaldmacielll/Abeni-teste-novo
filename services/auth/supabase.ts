@@ -10,21 +10,37 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Hardcoded admin user for development
-const HARDCODED_ADMIN = {
-  email: 'ronaldadm@hotmail.com',
-  password: '34775585',
-  user: {
-    id: 'admin-dev-001',
+// Hardcoded users for development
+const HARDCODED_USERS = [
+  {
     email: 'ronaldadm@hotmail.com',
-    clientId: 'admin-client',
-    role: 'internal' as const,
-    metadata: {
-      name: 'Ronald Administrador',
-      company: 'Sistema',
+    password: '34775585',
+    user: {
+      id: 'admin-dev-001',
+      email: 'ronaldadm@hotmail.com',
+      clientId: 'admin-client',
+      role: 'internal' as const,
+      metadata: {
+        name: 'Ronald Administrador',
+        company: 'ALUA - Sistema',
+      },
     },
   },
-}
+  {
+    email: 'cliente@exemplo.com',
+    password: 'cliente123',
+    user: {
+      id: 'client-dev-001',
+      email: 'cliente@exemplo.com',
+      clientId: 'client-001',
+      role: 'client' as const,
+      metadata: {
+        name: 'Cliente Exemplo',
+        company: 'Empresa Exemplo Ltda',
+      },
+    },
+  },
+]
 
 // Check if we're using temporary Supabase values
 const isUsingTempSupabase = 
@@ -75,8 +91,12 @@ export interface AuthResponse {
 
 export class AuthService {
   async signIn(email: string, password: string): Promise<AuthResponse> {
-    // Check for hardcoded admin user first
-    if (email === HARDCODED_ADMIN.email && password === HARDCODED_ADMIN.password) {
+    // Check for hardcoded users first
+    const hardcodedUser = HARDCODED_USERS.find(
+      (u) => u.email === email && u.password === password
+    )
+    
+    if (hardcodedUser) {
       const now = Date.now()
       const expiresAt = now + (7 * 24 * 60 * 60 * 1000) // 7 days from now
       
@@ -84,17 +104,19 @@ export class AuthService {
         accessToken: `dev-token-${now}`,
         refreshToken: `dev-refresh-${now}`,
         expiresAt: Math.floor(expiresAt / 1000),
-        user: HARDCODED_ADMIN.user,
+        user: hardcodedUser.user,
       }
 
       // Store token in cookie for middleware access
       if (typeof document !== 'undefined') {
         document.cookie = `sb-access-token=${session.accessToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
         document.cookie = `sb-refresh-token=${session.refreshToken}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
+        // Store user data for session retrieval
+        document.cookie = `sb-user-data=${encodeURIComponent(JSON.stringify(hardcodedUser.user))}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
       }
 
       return {
-        user: HARDCODED_ADMIN.user,
+        user: hardcodedUser.user,
         session,
         token: session.accessToken,
       }
@@ -163,6 +185,7 @@ export class AuthService {
     if (typeof document !== 'undefined') {
       document.cookie = 'sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       document.cookie = 'sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie = 'sb-user-data=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
 
     // Try to sign out from Supabase if available
@@ -185,17 +208,23 @@ export class AuthService {
       }, {} as Record<string, string>)
 
       const accessToken = cookies['sb-access-token']
+      const userData = cookies['sb-user-data']
       
-      // If it's a dev token, return hardcoded session
-      if (accessToken?.startsWith('dev-token-')) {
-        const now = Date.now()
-        const expiresAt = now + (7 * 24 * 60 * 60 * 1000)
-        
-        return {
-          accessToken,
-          refreshToken: cookies['sb-refresh-token'] || '',
-          expiresAt: Math.floor(expiresAt / 1000),
-          user: HARDCODED_ADMIN.user,
+      // If it's a dev token, return session with stored user data
+      if (accessToken?.startsWith('dev-token-') && userData) {
+        try {
+          const user = JSON.parse(decodeURIComponent(userData))
+          const now = Date.now()
+          const expiresAt = now + (7 * 24 * 60 * 60 * 1000)
+          
+          return {
+            accessToken,
+            refreshToken: cookies['sb-refresh-token'] || '',
+            expiresAt: Math.floor(expiresAt / 1000),
+            user,
+          }
+        } catch (error) {
+          console.error('Failed to parse user data from cookie:', error)
         }
       }
     }

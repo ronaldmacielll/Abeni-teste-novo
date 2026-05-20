@@ -14,15 +14,15 @@ export const Card: React.FC<CardProps> = ({
   className,
   hover = false,
 }) => {
-  const baseStyles = 'rounded-lg p-6';
+  const baseStyles = 'rounded-2xl p-6';
   
   const variantStyles = {
-    default: 'bg-white shadow-sm border border-gray-200',
-    elevated: 'bg-white shadow-lg border border-gray-200',
-    outlined: 'bg-white border-2 border-gray-300',
+    default: 'bg-dark-card shadow-sm border border-gray-800',
+    elevated: 'bg-dark-elevated shadow-xl border border-gray-700',
+    outlined: 'bg-dark-card border-2 border-gray-700',
   };
   
-  const hoverStyles = hover ? 'hover:shadow-md transition-shadow duration-200' : '';
+  const hoverStyles = hover ? 'hover:shadow-2xl hover:border-purple-500/50 hover:scale-[1.02] transition-all duration-300 cursor-pointer' : '';
   
   return (
     <div

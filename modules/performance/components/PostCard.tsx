@@ -92,7 +92,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onImageError }) => {
 
       {/* Title */}
       {post.title && (
-        <h3 className="text-base font-semibold text-gray-900 mb-4 line-clamp-2">
+        <h3 className="text-base font-semibold text-white mb-4 line-clamp-2">
           {post.title}
         </h3>
       )}
@@ -101,10 +101,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onImageError }) => {
       <div className="grid grid-cols-2 gap-3 mt-auto">
         {/* Alcance */}
         <div className="flex items-start gap-2">
-          <Users className="w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0" />
+          <Users className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
           <div className="min-w-0">
-            <p className="text-xs text-gray-600">Alcance</p>
-            <p className="text-sm font-semibold text-gray-900 truncate">
+            <p className="text-xs text-gray-400">Alcance</p>
+            <p className="text-sm font-semibold text-white truncate">
               {formatNumber(post.metrics.alcance)}
             </p>
           </div>
@@ -112,10 +112,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onImageError }) => {
 
         {/* Engajamento */}
         <div className="flex items-start gap-2">
-          <Heart className="w-4 h-4 text-danger-main mt-0.5 flex-shrink-0" />
+          <Heart className="w-4 h-4 text-pink-400 mt-0.5 flex-shrink-0" />
           <div className="min-w-0">
-            <p className="text-xs text-gray-600">Engajamento</p>
-            <p className="text-sm font-semibold text-gray-900 truncate">
+            <p className="text-xs text-gray-400">Engajamento</p>
+            <p className="text-sm font-semibold text-white truncate">
               {formatNumber(post.metrics.engajamento)}
             </p>
           </div>
@@ -123,10 +123,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onImageError }) => {
 
         {/* Impressões */}
         <div className="flex items-start gap-2">
-          <Eye className="w-4 h-4 text-info-main mt-0.5 flex-shrink-0" />
+          <Eye className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
           <div className="min-w-0">
-            <p className="text-xs text-gray-600">Impressões</p>
-            <p className="text-sm font-semibold text-gray-900 truncate">
+            <p className="text-xs text-gray-400">Impressões</p>
+            <p className="text-sm font-semibold text-white truncate">
               {formatNumber(post.metrics.impressoes)}
             </p>
           </div>
@@ -134,10 +134,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onImageError }) => {
 
         {/* Cliques */}
         <div className="flex items-start gap-2">
-          <MousePointer className="w-4 h-4 text-secondary-500 mt-0.5 flex-shrink-0" />
+          <MousePointer className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
           <div className="min-w-0">
-            <p className="text-xs text-gray-600">Cliques</p>
-            <p className="text-sm font-semibold text-gray-900 truncate">
+            <p className="text-xs text-gray-400">Cliques</p>
+            <p className="text-sm font-semibold text-white truncate">
               {formatNumber(post.metrics.cliques)}
             </p>
           </div>

@@ -1,12 +1,22 @@
 'use client';
 
-import { Inter } from 'next/font/google'
+import { Inter, Poppins, Orbitron } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/modules/shared/hooks/useAuth'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
+const poppins = Poppins({ 
+  weight: ['400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+})
+const orbitron = Orbitron({
+  weight: ['400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+})
 
 // Retryable status codes for transient errors
 const RETRYABLE_STATUS_CODES = [408, 429, 502, 503, 504];
@@ -54,7 +64,7 @@ export default function RootLayout({
 
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${poppins.variable} ${orbitron.variable}`}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>{children}</AuthProvider>
         </QueryClientProvider>

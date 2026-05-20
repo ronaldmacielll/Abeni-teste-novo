@@ -58,28 +58,31 @@ function StatusIndicator({ status }: { status: Transaction['status'] }) {
   const config = {
     Pago: {
       icon: CheckCircle,
-      color: 'text-success-main',
-      bg: 'bg-success-light',
+      color: 'text-green-400',
+      bg: 'bg-green-500/20',
+      border: 'border-green-500/30',
       label: 'Pago',
     },
     Pendente: {
       icon: Clock,
-      color: 'text-warning-main',
-      bg: 'bg-warning-light',
+      color: 'text-yellow-400',
+      bg: 'bg-yellow-500/20',
+      border: 'border-yellow-500/30',
       label: 'Pendente',
     },
     Atrasado: {
       icon: AlertCircle,
-      color: 'text-danger-main',
-      bg: 'bg-danger-light',
+      color: 'text-red-400',
+      bg: 'bg-red-500/20',
+      border: 'border-red-500/30',
       label: 'Atrasado',
     },
   };
 
-  const { icon: Icon, color, bg, label } = config[status];
+  const { icon: Icon, color, bg, border, label } = config[status];
 
   return (
-    <div className={clsx('flex items-center gap-2 px-3 py-1 rounded-full', bg)}>
+    <div className={clsx('flex items-center gap-2 px-3 py-1 rounded-full border', bg, border)}>
       <Icon className={clsx('w-4 h-4', color)} />
       <span className={clsx('text-xs font-medium', color)}>
         {label}
@@ -116,7 +119,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
     return (
       <Card>
         <div className="text-center py-8">
-          <p className="text-gray-500">Nenhuma transação encontrada</p>
+          <p className="text-gray-400">Nenhuma transação encontrada</p>
         </div>
       </Card>
     );
@@ -126,26 +129,26 @@ export const TransactionList: React.FC<TransactionListProps> = ({
     <Card className="overflow-hidden p-0">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-gray-900 border-b border-gray-800">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Descrição
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Tipo
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Valor
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Vencimento
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-dark-card divide-y divide-gray-800">
             {sortedTransactions.map((transaction) => {
               const isDueToday = isToday(transaction.dataVencimento);
               
@@ -153,8 +156,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                 <tr
                   key={transaction.id}
                   className={clsx(
-                    'hover:bg-gray-50 transition-colors',
-                    isDueToday && 'bg-blue-50'
+                    'hover:bg-gray-800/50 transition-colors',
+                    isDueToday && 'bg-purple-500/10'
                   )}
                 >
                   {/* Status */}
@@ -165,11 +168,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                   {/* Description */}
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-1">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-white">
                         {transaction.descricao}
                       </p>
                       {transaction.parcelamento && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-400">
                           Parcela {transaction.parcelamento.current} de {transaction.parcelamento.total}
                           {' '}({formatCurrency(transaction.parcelamento.valuePerInstallment)}/parcela)
                         </p>
@@ -181,10 +184,10 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={clsx(
-                        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border',
                         transaction.tipo === 'Entrada'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                          ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                          : 'bg-red-500/20 text-red-400 border-red-500/30'
                       )}
                     >
                       {transaction.tipo}
@@ -196,13 +199,13 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                     <p
                       className={clsx(
                         'text-sm font-semibold',
-                        transaction.tipo === 'Entrada' ? 'text-success-text' : 'text-danger-text'
+                        transaction.tipo === 'Entrada' ? 'text-green-400' : 'text-red-400'
                       )}
                     >
                       {transaction.tipo === 'Entrada' ? '+' : '-'} {formatCurrency(transaction.valor)}
                     </p>
                     {transaction.impostosTaxas > 0 && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-400">
                         Impostos: {formatCurrency(transaction.impostosTaxas)}
                       </p>
                     )}
@@ -211,11 +214,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                   {/* Due Date */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex flex-col gap-1">
-                      <p className={clsx('text-sm', isDueToday && 'font-semibold text-primary-600')}>
+                      <p className={clsx('text-sm text-gray-300', isDueToday && 'font-semibold text-purple-400')}>
                         {formatDate(transaction.dataVencimento)}
                       </p>
                       {isDueToday && (
-                        <span className="text-xs text-primary-600 font-medium">
+                        <span className="text-xs text-purple-400 font-medium">
                           Vence hoje
                         </span>
                       )}

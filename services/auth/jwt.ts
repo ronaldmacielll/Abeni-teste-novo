@@ -48,3 +48,49 @@ export function extractClientIdFromToken(token: string): string | null {
     return null;
   }
 }
+
+/**
+ * Extract role from Supabase JWT token or development token
+ * 
+ * For development tokens, extracts role from cookie data.
+ * For Supabase JWT tokens, checks for role in the following order:
+ * 1. payload.role (root level)
+ * 2. payload.user_metadata.role
+ * 3. payload.app_metadata.role
+ * 
+ * @param token - JWT token string or development token
+ * @returns role string ('client' | 'internal') if found, 'client' as default
+ */
+export function extractRoleFromToken(token: string): 'client' | 'internal' {
+  try {
+    // Check if it's a development token
+    if (token.startsWith('dev-token-')) {
+      // For dev tokens, we need to check cookies for user data
+      // This will be handled in the API route by reading cookies
+      return 'internal'; // Default for dev tokens (will be overridden by cookie data)
+    }
+
+    // JWT tokens have 3 parts separated by dots
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      return 'client'; // Default to client role
+    }
+
+    // Decode the payload (second part)
+    const payload = JSON.parse(
+      Buffer.from(parts[1], 'base64').toString('utf-8')
+    );
+
+    // Check for role in different possible locations
+    const role = 
+      payload.role || 
+      payload.user_metadata?.role ||
+      payload.app_metadata?.role;
+    
+    // Return role if valid, otherwise default to 'client'
+    return (role === 'internal' || role === 'client') ? role : 'client';
+  } catch (error) {
+    console.error('Failed to extract role from token:', error);
+    return 'client'; // Default to client role on error
+  }
+}
