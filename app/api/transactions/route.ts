@@ -196,6 +196,8 @@ export async function GET(request: NextRequest) {
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
           impostosTaxas: 1275.00, // 15% de impostos
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -206,6 +208,8 @@ export async function GET(request: NextRequest) {
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
           impostosTaxas: 480.00,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -216,6 +220,8 @@ export async function GET(request: NextRequest) {
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
           impostosTaxas: 750.00,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -226,7 +232,8 @@ export async function GET(request: NextRequest) {
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
           impostosTaxas: 600.00,
-          parcelamento: '1/3',
+          parcelamento: { current: 1, total: 3, valuePerInstallment: 4000.00 },
+          createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -237,6 +244,8 @@ export async function GET(request: NextRequest) {
           status: 'Pendente',
           dataVencimento: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days from now
           impostosTaxas: 1020.00,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -247,7 +256,8 @@ export async function GET(request: NextRequest) {
           status: 'Pendente',
           dataVencimento: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
           impostosTaxas: 600.00,
-          parcelamento: '2/3',
+          parcelamento: { current: 2, total: 3, valuePerInstallment: 4000.00 },
+          createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         
@@ -259,6 +269,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -268,6 +281,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -277,6 +293,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -286,6 +305,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -295,6 +317,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pago',
           dataVencimento: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 22 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -304,6 +329,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pendente',
           dataVencimento: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 27 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -313,6 +341,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pendente',
           dataVencimento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 23 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
         {
@@ -322,6 +353,9 @@ export async function GET(request: NextRequest) {
           tipo: 'Saída',
           status: 'Pendente',
           dataVencimento: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
+          impostosTaxas: 0,
+          parcelamento: null,
+          createdAt: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
           clientId,
         },
       ]
