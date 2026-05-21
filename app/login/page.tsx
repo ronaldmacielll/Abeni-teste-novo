@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Button, Input, Card } from '@/lib/design-system/components';
 import { useAuth } from '@/modules/shared/hooks/useAuth';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signIn, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -161,5 +161,17 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-white">Carregando...</div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

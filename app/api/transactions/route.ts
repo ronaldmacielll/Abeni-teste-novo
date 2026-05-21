@@ -5,6 +5,9 @@
  * Implements JWT validation, multi-tenant filtering, data normalization, and financial calculations
  */
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server'
 import { ClickUpService } from '@/services/clickup/client'
 import { dataNormalizer } from '@/services/clickup/normalizer'
