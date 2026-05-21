@@ -119,35 +119,10 @@ export async function GET(request: NextRequest) {
     let posts: Post[] = []
 
     if (isUsingTempClickUp) {
-      // Return mock data for development
-      console.log('Using mock performance data (no ClickUp connection)')
+      // Return empty data when no ClickUp connection
+      console.log('No ClickUp connection - returning empty data')
       
-      const mockPosts: Post[] = [
-        {
-          id: 'mock-post-1',
-          title: 'Lançamento de Produto - Campanha Instagram',
-          imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
-          status: 'Publicado',
-          metrics: {
-            alcance: 15420,
-            engajamento: 1847,
-            impressoes: 23150,
-            cliques: 892,
-          },
-          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          clientId,
-        },
-        {
-          id: 'mock-post-2',
-          title: 'Dicas de Uso - Stories Interativo',
-          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
-          status: 'Publicado',
-          metrics: {
-            alcance: 8930,
-            engajamento: 2341,
-            impressoes: 12450,
-            cliques: 456,
+      const mockPosts: Post[] = []
           },
           createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
           publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
@@ -245,12 +220,7 @@ export async function GET(request: NextRequest) {
         },
       ]
 
-      // Filter by date range based on publishedAt
-      posts = mockPosts.filter((post) => {
-        if (!post.publishedAt) return false
-        const postDate = new Date(post.publishedAt)
-        return postDate >= startDate && postDate <= endDate
-      })
+      posts = []
     } else {
       // Real ClickUp integration
       const clickupService = new ClickUpService(env.clickup.apiKey)
