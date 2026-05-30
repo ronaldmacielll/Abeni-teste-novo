@@ -7,6 +7,9 @@
 export { PostCard } from './PostCard';
 export type { PostCardProps } from './PostCard';
 
+export { InstagramPostCard } from './InstagramPostCard';
+export type { InstagramPostCardProps } from './InstagramPostCard';
+
 export { MetricDisplay } from './MetricDisplay';
 export type { MetricDisplayProps } from './MetricDisplay';
 

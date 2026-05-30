@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run linting
+npm run lint:fix
+
+# Run type checking
+npm run type-check
+
+# Run tests with coverage check
+npm run test:coverage:check

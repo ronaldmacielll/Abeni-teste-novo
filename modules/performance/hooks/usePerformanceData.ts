@@ -1,18 +1,21 @@
 /**
  * usePerformanceData Hook
  * 
- * React Query hook for fetching performance posts with caching and error handling
- * Implements Requirements: 13.2, 13.3, 15.3
+ * React Query hook for fetching performance posts from multiple sources (ClickUp + Instagram)
+ * with caching and error handling
+ * Implements Requirements: 12.1, 12.2, 12.3, 12.4, 13.2, 13.3, 15.3
  */
 
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import type { GetPostsResponse } from '../types/post.types';
+import type { GetPostsResponse, PostSource } from '../types/post.types';
 
 interface UsePerformanceDataOptions {
   period?: 'week' | 'month';
   enabled?: boolean;
+  source?: PostSource | 'all';
+  accountId?: string;
 }
 
 interface UsePerformanceDataReturn {
@@ -27,9 +30,13 @@ interface UsePerformanceDataReturn {
 }
 
 /**
- * Fetch posts from the BFF API
+ * Fetch posts from the BFF API (from multiple sources: ClickUp + Instagram)
  */
-async function fetchPosts(period: 'week' | 'month' = 'month'): Promise<GetPostsResponse> {
+async function fetchPosts(
+  period: 'week' | 'month' = 'month',
+  source: PostSource | 'all' = 'all',
+  accountId?: string
+): Promise<GetPostsResponse> {
   // Get token from localStorage
   const authSession = localStorage.getItem('auth_session');
   let token = '';
@@ -52,7 +59,17 @@ async function fetchPosts(period: 'week' | 'month' = 'month'): Promise<GetPostsR
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`/api/posts?period=${period}`, {
+  // Build query string
+  const params = new URLSearchParams();
+  params.append('period', period);
+  if (source !== 'all') {
+    params.append('source', source);
+  }
+  if (accountId) {
+    params.append('accountId', accountId);
+  }
+
+  const response = await fetch(`/api/posts?${params.toString()}`, {
     headers,
     credentials: 'include',
   });
@@ -90,24 +107,31 @@ async function fetchPosts(period: 'week' | 'month' = 'month'): Promise<GetPostsR
  * - Background revalidation
  * - Automatic retry with exponential backoff
  * - Error handling with user-friendly messages
+ * - Support for multiple data sources (ClickUp + Instagram)
+ * - Automatic merging and sorting of posts by date
  * 
  * @param options - Configuration options
  * @param options.period - Time period filter ('week' or 'month')
  * @param options.enabled - Whether the query should run (default: true)
+ * @param options.source - Filter by source ('clickup', 'instagram', or 'all')
+ * @param options.accountId - Filter by Instagram account ID
  * 
  * @example
  * ```tsx
- * const { posts, isLoading, error, refetch } = usePerformanceData({ period: 'month' });
+ * const { posts, isLoading, error, refetch } = usePerformanceData({ 
+ *   period: 'month',
+ *   source: 'all'
+ * });
  * ```
  */
 export function usePerformanceData(
   options: UsePerformanceDataOptions = {}
 ): UsePerformanceDataReturn {
-  const { period = 'month', enabled = true } = options;
+  const { period = 'month', enabled = true, source = 'all', accountId } = options;
 
   const query = useQuery<GetPostsResponse, Error>({
-    queryKey: ['performance-posts', period],
-    queryFn: () => fetchPosts(period),
+    queryKey: ['performance-posts', period, source, accountId],
+    queryFn: () => fetchPosts(period, source, accountId),
     enabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
